@@ -1,0 +1,55 @@
+# Voice Calculator Web App
+
+A simple and interactive voice-enabled calculator built using HTML, CSS, and JavaScript. This app allows users to perform calculations either manually or via voice input using the Web Speech API.
+
+## 🚀 Features
+
+- 🎙️ **Voice Input Support** (uses browser speech recognition)
+- ✍️ **Manual Input Buttons** for numbers and operations
+- 🧮 Supports operations: `+`, `-`, `*`, `/`, `^` (power)
+- 💾 **Calculation History**
+- 🧹 **Clear Display** and **Clear History**
+- 🧠 **Expression Evaluation** using JavaScript `eval()`
+- 🪄 Smooth UI animations and hover effects
+
+## 📦 Tech Stack
+
+- **Frontend**: HTML, CSS, JavaScript
+- **API**: Web Speech API for voice recognition
+
+## 🖥️ UI Overview
+
+- `sub-display`: Shows the result
+- `display`: Shows the current expression
+- `history`: Shows the list of past calculations
+- `buttons`: Grid of calculator buttons, including a voice button (🎙️)
+
+## 🛠️ Setup Instructions
+
+1. Clone or download the repository.
+2. Open `vcalculator_app.html` in your browser.
+3. Allow microphone permissions when prompted.
+4. Click the 🎙️ button and speak your math expression (e.g., "two plus two").
+
+## 🗣️ Voice Command Examples
+
+| Spoken Phrase         | Evaluated As     |
+|----------------------|------------------|
+| "five plus two"      | `5 + 2`          |
+| "ten divided by two" | `10 / 2`         |
+| "three into four"    | `3 * 4`          |
+| "two power three"    | `2 ** 3`         |
+
+> Voice inputs are automatically sanitized to map common math terms to JavaScript symbols.
+
+## ⚠️ Notes
+
+- Works best in **Chrome** or **Edge** (due to Web Speech API support).
+- Uses `eval()` for expression evaluation – avoid entering untrusted inputs.
+
+## 📄 License
+
+This project is open source and free to use.
+
+---
+
