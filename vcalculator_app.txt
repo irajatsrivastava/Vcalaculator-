@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voice Calculator</title>
+  <style>
+    :root {
+      --main-bg: #ffffff;
+      --btn-bg: #A8E6CF;
+      --btn-text: #000000;
+      --btn-hover: #95d6bf;
+      --accent: #A8E6CF;
+      --danger: #000000;
+      --success: #000000;
+      --shadow-dark: #000000;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--main-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .calculator {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 6px 6px 0px var(--shadow-dark);
+      padding: 20px;
+      width: 360px;
+      border: 2px solid black;
+      box-sizing: border-box;
+    }
+
+    .display {
+      text-align: right;
+      padding: 5px 10px;
+      font-size: 1.2rem;
+      color: #000;
+      min-height: 30px;
+    }
+
+    .sub-display {
+      text-align: right;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #000;
+      min-height: 40px;
+      margin-bottom: 10px;
+    }
+
+    .history {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 5px;
+      max-height: 80px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 5px;
+      background: #f9f9f9;
+    }
+
+    .clear-history {
+      font-size: 0.7rem;
+      color: #007bff;
+      text-align: right;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 0;
+    }
+
+    button {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      padding: 18px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      box-shadow: 3px 3px 0px var(--shadow-dark);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background: var(--btn-hover);
+      transform: translateY(2px);
+      box-shadow: 2px 2px 0px var(--shadow-dark);
+    }
+
+    .voice-btn {
+      background: var(--accent);
+      color: var(--btn-text);
+      font-size: 1rem;
+      padding: 16px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 0px var(--shadow-dark);
+      animation: pulse 2s infinite;
+    }
+
+    .result-btn {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+    }
+
+    .del-btn {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.6); }
+      70% { box-shadow: 0 0 0 10px rgba(0, 0, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="sub-display" id="result">0</div>
+    <div class="display" id="expression"></div>
+    <div class="clear-history" onclick="clearHistory()">clear</div>
+    <div class="history" id="history"></div>
+    <div class="buttons">
+      <button class="del-btn" onclick="clearDisplay()">DEL</button>
+      <button onclick="backspace()">⌫</button>
+      <button onclick="append('**')">^</button>
+      <button onclick="append('/')">÷</button>
+
+      <button onclick="append('1')">1</button>
+      <button onclick="append('2')">2</button>
+      <button onclick="append('3')">3</button>
+      <button onclick="append('*')">*</button>
+
+      <button onclick="append('4')">4</button>
+      <button onclick="append('5')">5</button>
+      <button onclick="append('6')">6</button>
+      <button onclick="append('+')">+</button>
+
+      <button onclick="append('7')">7</button>
+      <button onclick="append('8')">8</button>
+      <button onclick="append('9')">9</button>
+      <button onclick="append('-')">-</button>
+
+      <button class="result-btn" onclick="calculate()">RESULT</button>
+      <button onclick="append('0')">0</button>
+      <button onclick="append('.')">.</button>
+      <button class="voice-btn" onclick="startVoiceInput()">🎙</button>
+    </div>
+  </div>
+
+  <script>
+    const resultDisplay = document.getElementById('result');
+    const expressionDisplay = document.getElementById('expression');
+    const historyDisplay = document.getElementById('history');
+    let expression = '';
+
+    function append(value) {
+      expression += value;
+      expressionDisplay.innerText = expression;
+    }
+
+    function clearDisplay() {
+      expression = '';
+      resultDisplay.innerText = '0';
+      expressionDisplay.innerText = '';
+    }
+
+    function backspace() {
+      expression = expression.slice(0, -1);
+      expressionDisplay.innerText = expression;
+    }
+
+    function calculate() {
+      try {
+        const result = eval(expression);
+        resultDisplay.innerText = result;
+        historyDisplay.innerHTML += `<div>${expression} = ${result}</div>`;
+        expressionDisplay.innerText = expression;
+        expression = '';
+      } catch {
+        resultDisplay.innerText = 'Error';
+        expressionDisplay.innerText = expression;
+      }
+    }
+
+    function clearHistory() {
+      historyDisplay.innerHTML = '';
+    }
+
+    function startVoiceInput() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.start();
+
+      const voiceBtn = document.querySelector('.voice-btn');
+      voiceBtn.classList.add('voice-anim');
+      setTimeout(() => voiceBtn.classList.remove('voice-anim'), 3000);
+
+      recognition.onresult = function (event) {
+        const transcript = event.results[0][0].transcript.toLowerCase();
+        const sanitized = transcript
+          .replace(/plus/g, '+')
+          .replace(/minus/g, '-')
+          .replace(/into|x|times|multiply/g, '*')
+          .replace(/divided by|divide/g, '/')
+          .replace(/power/g, '**')
+          .replace(/ /g, '');
+
+        expression = sanitized;
+        calculate();
+      };
+
+      recognition.onerror = function () {
+        resultDisplay.innerText = 'Voice Error';
+      };
+    }
+  </script>
+</body>
+</html>
